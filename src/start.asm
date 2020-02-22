@@ -43,7 +43,7 @@ Entry:
         */
 
         // Draw map routine
-        jsr
+        jsr MAPLOADER.DrawMap
 
         // Draw / Initialise Player routine
         jsr
