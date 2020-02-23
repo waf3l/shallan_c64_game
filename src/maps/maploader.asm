@@ -1,6 +1,6 @@
 MAPLOADER: {
     DrawMap: {
-        // iterators ?
+        // iterators over rows and columns
         .label ROW = TEMP1
         .label COL = TEMP2
         
@@ -56,6 +56,8 @@ MAPLOADER: {
                     /*
                         Get map tiles start address and add to it
                         the value from TileCharLookup
+                        So after calculations we will be at beginning of tile (char[0])
+                        
                     */
                     clc
                     lda #<MAP_TILES
@@ -64,7 +66,7 @@ MAPLOADER: {
                     lda #>MAP_TILES
                     adc TileCharLookup + 2
                     sta TileCharLookup + 2
-
+                    
                 !DrawTile:    
                     
                     TileCharLookup:

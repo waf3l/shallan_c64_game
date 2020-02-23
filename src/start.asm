@@ -46,7 +46,19 @@ Entry:
         // Draw map routine
         jsr MAPLOADER.DrawMap
 
-        jmp *
+        // Init player
+        jsr PLAYER.Init
+
+    !Loop:
+        :waitForRasterLine(100)
+        
+        jsr PLAYER.PlayerJoyControl
+
+        jsr PLAYER.DrawPlayer
+
+        :waitForRasterLine(255)
+
+        jmp !Loop-
 
 
 // here we place the import becasue of memory managment. We need
