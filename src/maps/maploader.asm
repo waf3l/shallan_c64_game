@@ -3,11 +3,11 @@ MAPLOADER: {
         // iterators ?
         .label ROW = TEMP1
         .label COL = TEMP2
-
+        
         // init screen with address memory of vic screen address
         lda #<VIC.SCREEN_RAM // lsb
         sta Screen + 1
-        lda #>VIC.SCREEM_RAM // msb
+        lda #>VIC.SCREEN_RAM // msb
         sta Screen + 2
 
         // init color screen address of vic color address
@@ -19,7 +19,7 @@ MAPLOADER: {
         // initialize the map tile [seek to first tail in the map memory address]
         lda #<MAP_1 // lsb
         sta MapTile + 1
-        lda #>MAP_!
+        lda #>MAP_1 // msb
         sta MapTile + 2
 
         // reset row count
@@ -32,24 +32,43 @@ MAPLOADER: {
             sta COL
 
             !ColumnLoop:
-                ldy #$00 // general counter 0->3 [4 char in tile]
+                ldy #$00 // char in tile general counter 0->3 [4 char in tile]
 
                 /*
-                    Init tile char lookup
+                    Init / Reset tile char lookup
                 */
                 lda #$00
                 sta TileCharLookup + 1
                 sta TileCharLookup + 2
 
                 MapTile:
-                    lda $BEEF
+                    lda $BEEF // tile number
+                    sta TileCharLookup + 1 // store tile number in Tile CharLookup at LSB
 
-                    
+                    /*
+                        Multiple by 4
+                    */
+                    asl TileCharLookup + 1
+                    rol TileCharLookup + 2
+                    asl TileCharLookup + 1
+                    rol TileCharLookup + 2
+
+                    /*
+                        Get map tiles start address and add to it
+                        the value from TileCharLookup
+                    */
+                    clc
+                    lda #<MAP_TILES
+                    adc TileCharLookup + 1
+                    sta TileCharLookup + 1
+                    lda #>MAP_TILES
+                    adc TileCharLookup + 2
+                    sta TileCharLookup + 2
 
                 !DrawTile:    
                     
                     TileCharLookup:
-                        sta $BEEF, y
+                        lda $BEEF, y
                         ldx TABLES.TileScreenLocations2x2, y
 
                     Screen:
@@ -57,7 +76,7 @@ MAPLOADER: {
 
                         tax // transfer REG A to REG X
                         
-                        lda CHAR_COLOR, x // load color value into REG A depend of char in REG X
+                        lda CHAR_COLORS, x // load color value into REG A depend of char in REG X
 
                         ldx TABLES.TileScreenLocations2x2, y // recover REG X
 

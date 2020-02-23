@@ -12,6 +12,7 @@ BasicUpstart2(Entry)
 
 
 * = * "Entry"
+
 Entry:
         // setting the color of background and border
         lda #$00
@@ -26,13 +27,13 @@ Entry:
 
         // bank out rom's [basic, kernel, leave IO]
         lda $01 // load actual settings
-        and %11111000 // clear first 3 bits
-        ora %00000101 // set up first 3 bits
+        and #%11111000 // clear first 3 bits
+        ora #%00000101 // set up first 3 bits
         sta $01 // save new settings
 
         // set VIC memory bank 3
         lda $dd00 // get values
-        and %11111100 // clear and set proper VIC memory bank [3]
+        and #%11111100 // clear and set proper VIC memory bank [3]
         sta $dd00 // store new settings
 
         lda #%00001100 // set proper bits [screen memory $0000-$03FF] [character memory $3000-$37FF]
@@ -45,13 +46,9 @@ Entry:
         // Draw map routine
         jsr MAPLOADER.DrawMap
 
-        // Draw / Initialise Player routine
-        jsr
+        jmp *
 
 
-    /*
-        Game loop
-    */
-    
-    !Loop:
-        jmp !Loop-
+// here we place the import becasue of memory managment. We need
+// to be sure that this is loaded in proper space in memory
+#import "maps/assets.asm"
