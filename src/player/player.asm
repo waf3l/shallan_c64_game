@@ -46,6 +46,27 @@ PLAYER: {
         lda JOY_PORT_2
         sta JOY_ZP
 
+        !Left:
+            lda JOY_ZP
+            and #JOY_LT
+            bne !LeftEnd+
+            
+            sec
+            lda PlayerX
+            sbc PlayerWalkSpeed
+            sta PlayerX
+
+            lda PlayerX + 1
+            sbc PlayerWalkSpeed + 1
+            sta PlayerX + 1
+
+            lda PlayerX + 2
+            sbc #$00
+            sta PlayerX + 2
+
+        !LeftEnd:
+            
+
         !Right:
             lda JOY_ZP // load joystick staus
             and #JOY_RT // compare it with right reference
