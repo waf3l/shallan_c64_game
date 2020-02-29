@@ -50,5 +50,5 @@ VIC: {
 .macro waitForRasterLine(line) {
     lda #line
     cmp VIC.RASTER_Y
-    bne * - 3
+    bne *-3
 }

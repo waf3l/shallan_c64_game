@@ -47,16 +47,52 @@ Entry:
         jsr MAPLOADER.DrawMap
 
         // Init player
-        jsr PLAYER.Init
+        jsr PLAYER.Initialise
 
     !Loop:
-        :waitForRasterLine(100)
-        
-        jsr PLAYER.PlayerJoyControl
+        :waitForRasterLine($80)
 
         jsr PLAYER.DrawPlayer
 
-        :waitForRasterLine(255)
+        jsr PLAYER.GetCollisions
+
+        jsr PLAYER.PlayerJoyControl
+
+
+        // Temporary debug code //////////////////////////
+        // .label COLLISION_LOOKUP = TEMP1
+
+        // ldy COLLISION_Y1 // load player position
+
+        // /*
+        //     Detect on which row we are
+        // */
+        // lda TABLES.ScreenRowLSB, y
+        // sta COLLISION_LOOKUP
+        // lda TABLES.ScreenRowMSB, y
+        // sta COLLISION_LOOKUP + 1
+
+        // ldy COLLISION_X1
+        // lda #$0c
+        // sta (COLLISION_LOOKUP), y
+
+
+        // ldy COLLISION_Y2 // load player position
+
+        // /*
+        //     Detect on which row we are
+        // */
+        // lda TABLES.ScreenRowLSB, y
+        // sta COLLISION_LOOKUP
+        // lda TABLES.ScreenRowMSB, y
+        // sta COLLISION_LOOKUP + 1
+
+        // ldy COLLISION_X2
+        // lda #$0c
+        // sta (COLLISION_LOOKUP), y
+        ///////////////////////////////////////////
+
+        :waitForRasterLine($82)
 
         jmp !Loop-
 
