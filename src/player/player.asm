@@ -1,8 +1,16 @@
 PLAYER: {
+    .label COLLISION_SOLID = %00010000
+    // .label COLLISION_DEATH = %00100000
+    // .label COLLISION_SOLID2 = %0100
+    // .label COLLISION_LADDER = %1000
+
 	PlayerX:
 			.byte $01 //2 pixel accuracy
 	PlayerY:
 			.byte $00 //1 pixel accuracy
+
+	PlayerFloorCollision:
+			.byte $00
 
 	Initialise: {
 			lda #$0a
@@ -28,18 +36,43 @@ PLAYER: {
 	}
 
     GetCollisions: {
-        ldx #1
+        // left food
+		ldx #1
         ldy #20
-        jsr PLAYER.GetCollisionPoint // set x, y register
-        stx COLLISION_X1
-        sty COLLISION_Y1
+		// detect collision for left food
+		// set x, y register coordinates of collision for left food
+        jsr PLAYER.GetCollisionPoint 
+		// get the char at x, y positions from x,y reg
+        jsr UTILS.GetCharacterAt
+        tax // transfer return value from accu to x reg
+        lda CHAR_COLORS, x // load data from char_colors indexed by X reg
+		sta PlayerFloorCollision
 
 
-        ldx #3
+		// right food
+        ldx #4
         ldy #20
-        jsr PLAYER.GetCollisionPoint // set x, y register
-        stx COLLISION_X2
-        sty COLLISION_Y2
+		// detect collision for left food
+		// set x, y register coordinates of collision for right food
+        jsr PLAYER.GetCollisionPoint
+        // get the char at x, y positions from x,y reg
+		jsr UTILS.GetCharacterAt
+        tax // transfer return value from accu to x reg
+        lda CHAR_COLORS, x // load data from char_colors indexed by X reg
+        ora PlayerFloorCollision // left or right food
+        and #$f0 // we dont care about the 4 lower bits
+		sta PlayerFloorCollision
+
+		// DEBUG ///////////////
+        lsr
+        lsr
+        lsr
+        lsr
+
+		sta VIC.COLOR_RAM
+		////////////////////////
+		
+		rts
     }
 
 	GetCollisionPoint: {
@@ -51,8 +84,8 @@ PLAYER: {
             stx X_PIXEL_OFFSET
             sty Y_PIXEL_OFFSET
             
-            .label X_BORDER_OFFSET = $0c
-			.label Y_BORDER_OFFSET = $30
+            .label X_BORDER_OFFSET = $0b
+			.label Y_BORDER_OFFSET = $32
 
 
 			//calculate x and y in screen space

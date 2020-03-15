@@ -9,7 +9,7 @@ $f800 - $fffd 16 sprites
 
 * = $d000 "Player sprites" // Start at frame #64
     SPRITES:
-        .import binary "../../assets/sprites/player_sprites_my.bin"
+        .import binary "../../assets/sprites/player_sprites.bin"
 
 * = $8000 "Map data"
     MAP_TILES:

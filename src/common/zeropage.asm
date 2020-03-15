@@ -8,5 +8,5 @@
 .label COLLISION_X1 = $11
 .label COLLISION_Y1 = $12
 
-.label COLLISION_X2 = $11
-.label COLLISION_Y2 = $12
+.label COLLISION_X2 = $13
+.label COLLISION_Y2 = $14

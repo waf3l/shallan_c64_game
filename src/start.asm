@@ -4,12 +4,11 @@ BasicUpstart2(Entry)
 #import "common/zeropage.asm"
 #import "../libs/vic.asm"
 #import "../libs/tables.asm"
-
+#import "utils/utils.asm"
 
 // game logic
 #import "maps/maploader.asm"
 #import "player/player.asm"
-
 
 * = * "Entry"
 
@@ -54,11 +53,9 @@ Entry:
 
         jsr PLAYER.DrawPlayer
 
-        jsr PLAYER.GetCollisions
-
         jsr PLAYER.PlayerJoyControl
-
-
+        jsr PLAYER.GetCollisions
+        
         // Temporary debug code //////////////////////////
         // .label COLLISION_LOOKUP = TEMP1
 
@@ -95,7 +92,6 @@ Entry:
         :waitForRasterLine($82)
 
         jmp !Loop-
-
 
 // here we place the import becasue of memory managment. We need
 // to be sure that this is loaded in proper space in memory
